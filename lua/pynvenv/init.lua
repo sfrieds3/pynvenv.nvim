@@ -4,6 +4,10 @@ function M.setup(opts)
   require('pynvenv.config').setup(opts)
 end
 
+local function get_venv_bin(venv)
+  return require('pynvenv.config').aliases(venv)
+end
+
 function M.deactivate()
   vim.env.pydoc = nil
   if vim.env.OLD_VIRTUAL_PATH then
@@ -18,7 +22,8 @@ function M.deactivate()
 end
 
 function M.activate(venv)
-  local venv_bin = string.format('%s/bin', venv)
+  local venv_bin = get_venv_bin(venv)
+
   M.deactivate()
   vim.env.OLD_VIRTUAL_PATH = vim.env.PATH
   vim.env.PATH = venv_bin .. ':' .. vim.env.PATH
