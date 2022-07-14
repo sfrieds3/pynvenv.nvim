@@ -5,7 +5,8 @@ function M.setup(opts)
 end
 
 local function get_venv_bin(venv)
-  return require('pynvenv.config').aliases(venv)
+  local venv_dir = require('pynvenv.config').aliases(venv)
+  return string.format('%s/bin', venv_dir)
 end
 
 function M.deactivate()
