@@ -46,7 +46,7 @@ end
 -- set new active venv
 -- @param venv absolute, relative, or alias of venv to activate
 -- return nil
-M.set_new_venv = function(venv)
+M.activate = function(venv)
   if vim.env.VIRTUAL_ENV then
     -- TODO we can probably just swap over the venv here
     print("ERROR: " .. M.current_venv .. " venv already activated!")
@@ -69,7 +69,7 @@ end
 
 -- activate venv in current directory
 -- return nil
-M.activate = function()
+M.auto_activate = function()
   -- TODO implement
   print("ERROR: activate not implemented yet...")
 end
