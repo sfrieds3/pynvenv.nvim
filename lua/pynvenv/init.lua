@@ -4,20 +4,20 @@ M.current_venv = nil
 M.current_venv_path = nil
 
 M.setup = function(opts)
-  require('pynvenv.config').setup(opts)
+  require("pynvenv.config").setup(opts)
 end
 
 -- @param venv alias or qualified path to venv
 -- get path to passed venv (either a path or alias)
 local get_venv_path = function(venv)
-  return require('pynvenv.config').aliases(venv)
+  return require("pynvenv.config").aliases(venv)
 end
 
 -- @param venv alias or qualified path to venv
 -- return bin dir of given venv
 local function get_venv_bin(venv)
   local venv_dir = get_venv_path(venv)
-  return string.format('%s/bin', venv_dir)
+  return string.format("%s/bin", venv_dir)
 end
 
 -- return path to curren venv
@@ -43,13 +43,13 @@ M.deactivate = function()
   M.current_venv = nil
 end
 
--- activate venv using either venv alias or qualified path
--- @param venv alias or qualified path to venv
+-- set new active venv
+-- @param venv absolute, relative, or alias of venv to activate
 -- return nil
-M.workon = function(venv)
+M.set_new_venv = function(venv)
   if vim.env.VIRTUAL_ENV then
     -- TODO we can probably just swap over the venv here
-    print('ERROR: ' .. M.current_venv .. ' venv already activated!')
+    print("ERROR: " .. M.current_venv .. " venv already activated!")
     return
   end
   local venv_path = get_venv_path(venv)
@@ -58,7 +58,7 @@ M.workon = function(venv)
   M.deactivate()
   vim.env.VIRTUAL_ENV = venv_path
   vim.env.OLD_VIRTUAL_PATH = vim.env.PATH
-  vim.env.PATH = venv_bin .. ':' .. vim.env.PATH
+  vim.env.PATH = venv_bin .. ":" .. vim.env.PATH
   if vim.env.PYTHONHOME then
     vim.env.OLD_VIRTUAL_PYTHONHOME = vim.env.PYTHONHOME
     vim.env.PYTHONHOME = nil
@@ -71,7 +71,15 @@ end
 -- return nil
 M.activate = function()
   -- TODO implement
-  print('ERROR: activate not impleented yet...')
+  print("ERROR: activate not implemented yet...")
+end
+
+-- activate venv in WORKON_HOME
+-- @param venv venv in WORKON_HOME to activate
+-- return nil
+M.workon = function(venv)
+  -- TODO implement
+  print("ERROR: workon not implemented")
 end
 
 return M

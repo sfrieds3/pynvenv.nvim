@@ -6,8 +6,8 @@ M.default_opts = {
   default_venv = nil,
   venv_aliases = {},
   auto_venv = false,
-  venv_roots = {}, -- TODO is this what we wnat to call it? 
-  project_roots = { '.git' },  -- TODO figure out what other project roots we should use
+  venv_roots = {}, -- TODO is this what we wnat to call it?
+  project_roots = { ".git" }, -- TODO figure out what other project roots we should use
 }
 
 -- @param venv alias or qualified path to venv
@@ -20,10 +20,10 @@ end
 -- @param opts setup opts
 -- return nil
 M.setup = function(opts)
-  M.opts = vim.tbl_deep_extend('force', M.default_opts, opts or {})
+  M.opts = vim.tbl_deep_extend("force", M.default_opts, opts or {})
 
   if M.opts.default_venv then
-    require('pynvenv.utils').set_default_venv()
+    require("pynvenv.utils").set_default_venv()
   end
 end
 
