@@ -1,70 +1,31 @@
 local M = {}
 
+local utils = require("pynvenv.utils")
+local config = require("pynvenv.config")
+
 M.current_venv = nil
 M.current_venv_path = nil
 
 M.setup = function(opts)
-  require("pynvenv.config").setup(opts)
+  config.setup(opts)
 end
 
 -- @param venv alias or qualified path to venv
 -- get path to passed venv (either a path or alias)
-local get_venv_path = function(venv)
-  return require("pynvenv.config").aliases(venv)
+M.get_venv_path = function(venv)
+  return config.aliases(venv)
 end
 
 -- @param venv alias or qualified path to venv
 -- return bin dir of given venv
-local function get_venv_bin(venv)
-  local venv_dir = get_venv_path(venv)
+M.get_venv_bin = function(venv)
+  local venv_dir = M.get_venv_path(venv)
   return string.format("%s/bin", venv_dir)
 end
 
 -- return path to curren venv
 M.get_venv = function()
   return M.current_venv
-end
-
--- deactivate current venv
-M.deactivate = function()
-  vim.env.pydoc = nil
-  if vim.env.OLD_VIRTUAL_PATH then
-    vim.env.PATH = vim.env.OLD_VIRTUAL_PATH
-    vim.env.OLD_VIRTUAL_PATH = nil
-  end
-
-  if vim.env.OLD_VIRTUAL_PYTHONHOME then
-    vim.env.PYTHONHOME = vim.env.OLD_VIRTUAL_PYTHONHOME
-    vim.env.OLD_VIRTUAL_PYTHONHOME = nil
-  end
-
-  vim.env.VIRTUAL_ENV = nil
-
-  M.current_venv = nil
-end
-
--- set new active venv
--- @param venv absolute, relative, or alias of venv to activate
--- return nil
-M.activate = function(venv)
-  if vim.env.VIRTUAL_ENV then
-    -- TODO we can probably just swap over the venv here
-    print("ERROR: " .. M.current_venv .. " venv already activated!")
-    return
-  end
-  local venv_path = get_venv_path(venv)
-  local venv_bin = get_venv_bin(venv)
-
-  M.deactivate()
-  vim.env.VIRTUAL_ENV = venv_path
-  vim.env.OLD_VIRTUAL_PATH = vim.env.PATH
-  vim.env.PATH = venv_bin .. ":" .. vim.env.PATH
-  if vim.env.PYTHONHOME then
-    vim.env.OLD_VIRTUAL_PYTHONHOME = vim.env.PYTHONHOME
-    vim.env.PYTHONHOME = nil
-  end
-
-  M.current_venv = venv
 end
 
 -- activate venv in current directory
@@ -79,6 +40,12 @@ end
 -- return nil
 M.workon = function(venv)
   -- TODO implement
+  local workon_home = config.workon_home
+  if not workon_home then
+    print("ERROR: WORKON_HOME not set, please set env or in setup function.")
+    return
+  end
+
   print("ERROR: workon not implemented")
 end
 
