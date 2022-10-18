@@ -1,8 +1,5 @@
 local utils = {}
 
-local pynvenv = require("pynvenv")
-local config = require("pynvenv.config")
-
 -- get project root
 -- @param path of project to determine root
 -- return project root
@@ -13,11 +10,12 @@ end
 -- if default_venv specified in config, set it
 -- return none
 utils.set_default_venv = function()
-  local venv = require("pynvenv.config").opts.default_venv
+  local venv = require("util.config").opts.default_venv
   require("pynvenv").workon(vim.fn.expand(venv))
 end
 
 -- deactivate current venv
+-- return none
 utils.deactivate = function()
   vim.env.pydoc = nil
   if vim.env.OLD_VIRTUAL_PATH then
@@ -32,7 +30,7 @@ utils.deactivate = function()
 
   vim.env.VIRTUAL_ENV = nil
 
-  pynvenv.current_venv = nil
+  require("pynvenv").current_venv = nil
 end
 
 -- set new active venv
@@ -41,11 +39,11 @@ end
 utils.activate = function(venv)
   if vim.env.VIRTUAL_ENV then
     -- TODO we can probably just swap over the venv here
-    print("ERROR: " .. pynvenv.current_venv .. " venv already activated!")
+    print("ERROR: " .. require("pynvenv").current_venv .. " venv already activated!")
     return
   end
-  local venv_path = pynvenv.get_venv_path(venv)
-  local venv_bin = pynvenv.get_venv_bin(venv)
+  local venv_path = require("pynvenv").get_venv_path(venv)
+  local venv_bin = require("pynvenv").get_venv_bin(venv)
 
   utils.deactivate()
   vim.env.VIRTUAL_ENV = venv_path
@@ -56,7 +54,7 @@ utils.activate = function(venv)
     vim.env.PYTHONHOME = nil
   end
 
-  pynvenv.current_venv = venv
+  require("pynvenv").current_venv = venv
 end
 
 return utils

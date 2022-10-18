@@ -1,6 +1,7 @@
 local M = {}
 
-local utils = require("pynvenv.utils")
+print("loaded!")
+local utils = require("pynvenv.util")
 local config = require("pynvenv.config")
 
 M.current_venv = nil
@@ -23,12 +24,13 @@ M.get_venv_bin = function(venv)
   return string.format("%s/bin", venv_dir)
 end
 
+-- get current env path
 -- return path to curren venv
 M.get_venv = function()
   return M.current_venv
 end
 
--- activate venv in current directory
+-- auto activate venv in current directory
 -- return nil
 M.auto_activate = function()
   -- TODO implement
@@ -39,14 +41,17 @@ end
 -- @param venv venv in WORKON_HOME to activate
 -- return nil
 M.workon = function(venv)
-  -- TODO implement
+  -- TODO use telescope here
   local workon_home = config.workon_home
   if not workon_home then
     print("ERROR: WORKON_HOME not set, please set env or in setup function.")
     return
   end
 
-  print("ERROR: workon not implemented")
+  local venv_dir = M.get_venv_path(venv)
+  utils.activate(venv_dir)
 end
+
+vim.cmd [[ command! -nargs=+ WorkonVenv lua require("pynvenv").workon(<f-args>) ]]
 
 return M

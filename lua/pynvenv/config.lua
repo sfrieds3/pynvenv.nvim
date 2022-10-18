@@ -24,7 +24,7 @@ config.setup = function(opts)
   config.opts = vim.tbl_deep_extend("force", config.default_opts, opts or {})
 
   if config.opts.default_venv then
-    require("pynvenv.utils").set_default_venv()
+    require("util.util").set_default_venv()
   end
 end
 
