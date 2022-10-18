@@ -1,22 +1,25 @@
-local utils = {}
+local util = {}
+
+util.current_venv = nil
+util.current_venv_path = nil
 
 -- get project root
 -- @param path of project to determine root
 -- return project root
-utils.find_project_root = function(path)
+util.find_project_root = function(path)
   print("find_project_root(" .. path .. ")")
 end
 
 -- if default_venv specified in config, set it
 -- return none
-utils.set_default_venv = function()
-  local venv = require("util.config").opts.default_venv
+util.set_default_venv = function()
+  local venv = require("pynvenv.config").opts.default_venv
   require("pynvenv").workon(vim.fn.expand(venv))
 end
 
 -- deactivate current venv
 -- return none
-utils.deactivate = function()
+util.deactivate = function()
   vim.env.pydoc = nil
   if vim.env.OLD_VIRTUAL_PATH then
     vim.env.PATH = vim.env.OLD_VIRTUAL_PATH
@@ -29,23 +32,26 @@ utils.deactivate = function()
   end
 
   vim.env.VIRTUAL_ENV = nil
-
-  require("pynvenv").current_venv = nil
+  util.current_venv = nil
 end
 
 -- set new active venv
--- @param venv absolute, relative, or alias of venv to activate
+-- @param venv_path path of venv to activate
 -- return nil
-utils.activate = function(venv)
+util.activate = function(venv_path)
   if vim.env.VIRTUAL_ENV then
     -- TODO we can probably just swap over the venv here
-    print("ERROR: " .. require("pynvenv").current_venv .. " venv already activated!")
+    print("ERROR: " .. util.current_venv .. " venv already activated!")
     return
   end
-  local venv_path = require("pynvenv").get_venv_path(venv)
-  local venv_bin = require("pynvenv").get_venv_bin(venv)
 
-  utils.deactivate()
+  local venv_bin = venv_path .. "/bin"
+  if vim.fn.isdirectory(venv_bin) == nil then
+    print("ERROR: " .. venv_bin .. " is not a valid venv location.")
+    return
+  end
+
+  util.deactivate()
   vim.env.VIRTUAL_ENV = venv_path
   vim.env.OLD_VIRTUAL_PATH = vim.env.PATH
   vim.env.PATH = venv_bin .. ":" .. vim.env.PATH
@@ -53,8 +59,7 @@ utils.activate = function(venv)
     vim.env.OLD_VIRTUAL_PYTHONHOME = vim.env.PYTHONHOME
     vim.env.PYTHONHOME = nil
   end
-
-  require("pynvenv").current_venv = venv
+  util.current_venv = venv_path
 end
 
-return utils
+return util
