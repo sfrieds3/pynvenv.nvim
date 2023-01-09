@@ -1,34 +1,37 @@
 local config = {}
-config.opts = {}
 
+local commands = require("pynvenv.commands")
+
+config.opts = {}
 config.default_opts = {
   current_venv = nil,
   default_venv = nil,
   venv_aliases = {},
   auto_venv = false,
-  venv_roots = {}, -- TODO is this what we wnat to call it?
-  project_roots = { ".git" }, -- TODO figure out what other project roots we should use
-  workon_home = vim.env.WORKON_HOME or nil
+  project_roots = { ".git" },
+  project_venv_dirs = {},
+  workon_home = vim.env.WORKON_HOME or nil,
+  setup_commands = true,
 }
 
--- @param venv alias or qualified path to venv
--- return path to venv alias if available
-config.aliases = function(venv)
-  return config.opts.venv_aliases.venv
+--- return path to alias name as configured in venv_aliases
+---@param venv string alias name
+---@return string venv_path
+function config.aliases(venv)
+  return config.opts.venv_aliases[venv]
 end
 
--- configure pynvenv
--- @param opts setup opts
--- return nil
-config.setup = function(opts)
+--- configure pynvenv
+---@param opts table user configuration
+function config.setup(opts)
   config.opts = vim.tbl_deep_extend("force", config.default_opts, opts or {})
 
   if vim.env.VIRTUAL_ENV then
-    require("pynvenv.util").current_venv = vim.env.VIRTUAL_ENV
+    require("pynvenv.utils").current_venv = vim.env.VIRTUAL_ENV
   end
 
   if config.opts.default_venv then
-    require("pynvenv.util").set_default_venv()
+    require("pynvenv.utils").set_default_venv()
   end
 
   -- TODO should this override enviornment var?
@@ -36,6 +39,9 @@ config.setup = function(opts)
     vim.env.WORKON_HOME = opts.workon_home
   end
 
+  if config.opts.setup_commands then
+    commands.create_user_commands()
+  end
 end
 
 return config

@@ -1,0 +1,16 @@
+local pynvenv = require("pynvenv")
+local config = require("pynvenv.config")
+local utils = require("pynvenv.utils")
+
+describe("Test pynvenv utils", function()
+  it("Can activate a venv", function()
+    utils.activate("./test_venv")
+    assert.equals("./test_venv", vim.env.VIRTUAL_ENV)
+  end)
+
+  it("Sets OLD_VIRTUAL_PATH", function()
+    utils.activate("./test_venv")
+    local expected_path = string.gsub(vim.env.PATH, "./test_venv/bin:", "")
+    assert.equals(expected_path, vim.env.OLD_VIRTUAL_PATH)
+  end)
+end)

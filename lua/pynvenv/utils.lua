@@ -1,25 +1,29 @@
-local util = {}
+local utils = {}
 
-util.current_venv = nil
-util.current_venv_path = nil
+local config = require("pynvenv.config")
 
--- get project root
--- @param path of project to determine root
+utils.current_venv = nil
+utils.current_venv_path = nil
+
+--- get project root
+---@param path string project path to determine root
 -- return project root
-util.find_project_root = function(path)
+function utils.find_project_root(path)
   print("find_project_root(" .. path .. ")")
 end
 
--- if default_venv specified in config, set it
--- return none
-util.set_default_venv = function()
-  local venv = require("pynvenv.config").opts.default_venv
-  require("pynvenv").workon(vim.fn.expand(venv))
+--- if default_venv specified in config, set it
+function utils.set_default_venv()
+  local venv = config.opts.default_venv
+  if venv and venv ~= "" then
+    require("pynvenv").workon(vim.fn.expand(venv))
+  else
+    print("No default venv configured.")
+  end
 end
 
--- deactivate current venv
--- return none
-util.deactivate = function()
+--- deactivate current venv
+function utils.deactivate()
   vim.env.pydoc = nil
   if vim.env.OLD_VIRTUAL_PATH then
     vim.env.PATH = vim.env.OLD_VIRTUAL_PATH
@@ -32,16 +36,15 @@ util.deactivate = function()
   end
 
   vim.env.VIRTUAL_ENV = nil
-  util.current_venv = nil
+  utils.current_venv = nil
 end
 
--- set new active venv
--- @param venv_path path of venv to activate
--- return nil
-util.activate = function(venv_path)
+--- set new active venv
+---@param venv_path string fully-qualified of venv to activate
+function utils.activate(venv_path)
   if vim.env.VIRTUAL_ENV then
     -- TODO we can probably just swap over the venv here
-    print("ERROR: " .. util.current_venv .. " venv already activated!")
+    print("ERROR: " .. utils.current_venv .. " venv already activated!")
     return
   end
 
@@ -51,7 +54,7 @@ util.activate = function(venv_path)
     return
   end
 
-  util.deactivate()
+  utils.deactivate()
   vim.env.VIRTUAL_ENV = venv_path
   vim.env.OLD_VIRTUAL_PATH = vim.env.PATH
   vim.env.PATH = venv_bin .. ":" .. vim.env.PATH
@@ -59,7 +62,7 @@ util.activate = function(venv_path)
     vim.env.OLD_VIRTUAL_PYTHONHOME = vim.env.PYTHONHOME
     vim.env.PYTHONHOME = nil
   end
-  util.current_venv = venv_path
+  utils.current_venv = venv_path
 end
 
-return util
+return utils
