@@ -12,16 +12,6 @@ function utils.find_project_root(path)
   print("find_project_root(" .. path .. ")")
 end
 
---- if default_venv specified in config, set it
-function utils.set_default_venv()
-  local venv = config.opts.default_venv
-  if venv and venv ~= "" then
-    require("pynvenv").workon(vim.fn.expand(venv))
-  else
-    print("No default venv configured.")
-  end
-end
-
 --- deactivate current venv
 function utils.deactivate()
   vim.env.pydoc = nil
@@ -42,12 +32,6 @@ end
 --- set new active venv
 ---@param venv_path string fully-qualified of venv to activate
 function utils.activate(venv_path)
-  if vim.env.VIRTUAL_ENV then
-    -- TODO we can probably just swap over the venv here
-    print("ERROR: " .. utils.current_venv .. " venv already activated!")
-    return
-  end
-
   local venv_bin = venv_path .. "/bin"
   if vim.fn.isdirectory(venv_bin) == nil then
     print("ERROR: " .. venv_bin .. " is not a valid venv location.")
@@ -63,6 +47,16 @@ function utils.activate(venv_path)
     vim.env.PYTHONHOME = nil
   end
   utils.current_venv = venv_path
+end
+
+--- if default_venv specified in config, set it
+function utils.set_default_venv()
+  local venv = config.opts.default_venv
+  if venv and venv ~= "" then
+    utils.activate(vim.fn.expand(venv))
+  else
+    print("No default venv configured.")
+  end
 end
 
 return utils

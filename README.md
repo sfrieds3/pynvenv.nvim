@@ -18,9 +18,8 @@ Activate and deactivate python virtualenvs. The easy way.
 config.default_opts = {
   default_venv = nil, -- default venv to source if no venv active upon entering vim
   venv_aliases = {}, -- table of aliases (e.g. { alias = "path/to/alias"}) to make sourcing venv easier
-  auto_venv = false, -- auto activate when changing directories.. currently in progress
   project_roots = { ".git" }, -- project root markers
-  project_venv_dirs = {}, -- list of venv directory names to search for in projects
+  project_venv_dirs = { "venv", ".venv" }, -- list of venv directory names to search for in projects
   workon_home = vim.env.WORKON_HOME or nil, -- WORKON_HOME, or the default directory for venvs (e.g. ~/.venv)
   setup_commands = true, -- create user commands
 }

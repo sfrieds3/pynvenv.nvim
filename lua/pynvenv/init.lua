@@ -3,12 +3,28 @@ local M = {}
 local utils = require("pynvenv.utils")
 local config = require("pynvenv.config")
 local has_notify, notify = pcall(require, "notify")
+local commands = require("pynvenv.commands")
 
 --- configure pynvenv
 ---@generic T
 ---@param opts T[] (table) configuration options
 function M.setup(opts)
   config.setup(opts)
+  if vim.env.VIRTUAL_ENV then
+    utils.activate(vim.env.VIRTUAL_ENV)
+  end
+
+  if config.opts.default_venv then
+    utils.set_default_venv()
+  end
+
+  if config.opts.workon_home then
+    vim.env.WORKON_HOME = config.opts.workon_home
+  end
+
+  if config.opts.setup_commands then
+    commands.create_user_commands()
+  end
 end
 
 --- get full path to venv
@@ -20,13 +36,7 @@ function M.get_venv_path(venv)
   if venv_path == nil then
     return vim.fn.expand(string.format("%s/%s", config.opts.workon_home, venv))
   end
-  return venv_path
-end
-
---- auto activate venv in current directory
-function M.auto_activate()
-  -- TODO implement
-  print("ERROR: auto activate not implemented yet...")
+  return venv_path[venv]
 end
 
 --- activate venv in WORKON_HOME
