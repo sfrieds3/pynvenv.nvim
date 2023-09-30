@@ -2,17 +2,32 @@
 
 Activate and deactivate python virtualenvs. The easy way.
 
-## Usage
+## Installation
 
-```venv
-:PyvenvWorkonVenv <venv_name>  " activate venv in $WORKON_HOME
-:PyvenvActivateVenv <venv_path> " activate venv_path
-:PyvenvDeactiveVevnv " deactivate current venv
-:PyvenvActivateVenvAlias " activate venv alias
-:PyvenvActivateProjectVenv " activate venv in current project, using config.project_roots and config.project_venv_dirs
+Install using your favorite neovim pacakge manager:
+
+
+```lua
+-- lazy.nvim
+{
+  "sfrieds3/pynvenv.nvim",
+  config = true
+}
 ```
 
-## configuration
+```lua
+-- pckr
+require("pckr").add({
+  {
+    "sfrids3/pynvenv.nvim",
+    config = function()
+      require("pynvenv").setup({})
+    end,
+  }
+})
+```
+
+## Configuration
 
 ```lua
 config.default_opts = {
@@ -23,4 +38,14 @@ config.default_opts = {
   workon_home = vim.env.WORKON_HOME or nil, -- WORKON_HOME, or the default directory for venvs (e.g. ~/.venv)
   setup_commands = true, -- create user commands
 }
+```
+
+## Usage
+
+```
+:PyvenvWorkonVenv <venv_name>  " activate venv in $WORKON_HOME
+:PyvenvActivateVenv <venv_path> " activate venv_path
+:PyvenvDeactiveVevnv " deactivate current venv
+:PyvenvActivateVenvAlias " activate venv alias
+:PyvenvActivateProjectVenv " activate venv in current project, using config.project_roots and config.project_venv_dirs
 ```
