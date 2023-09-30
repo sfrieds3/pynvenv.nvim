@@ -3,7 +3,6 @@ local utils = {}
 local config = require("pynvenv.config")
 
 utils.current_venv = nil
-utils.current_venv_path = nil
 
 --- get project root
 ---@param path string project path to determine root

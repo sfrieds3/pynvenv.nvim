@@ -37,7 +37,9 @@ function M.create_user_commands()
     { bang = true, desc = "Deactivate currently activated venv." }
   )
 
-  vim.api.nvim_create_user_command("PynvenvCurrentVenv", utils.current_venv_path, { desc = "Return current venv path" })
+  vim.api.nvim_create_user_command("PynvenvCurrentVenv", function()
+    print(vim.env.VIRTUAL_ENV)
+  end, { desc = "Return current venv path" })
 end
 
 return M
