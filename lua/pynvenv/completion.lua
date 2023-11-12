@@ -53,13 +53,9 @@ function completion.venv_aliases(lead, _, _)
     return candidates
   end
 
-  P(candidates)
-
   return tkey_filter(function(venv)
     return vim.startswith(venv, lead)
   end, candidates)
 end
-
-P(completion.workon_venvs("v"))
 
 return completion
