@@ -19,7 +19,7 @@ Install using your favorite neovim pacakge manager:
 -- pckr
 require("pckr").add({
   {
-    "sfrids3/pynvenv.nvim",
+    "sfrieds3/pynvenv.nvim",
     config = function()
       require("pynvenv").setup({})
     end,
